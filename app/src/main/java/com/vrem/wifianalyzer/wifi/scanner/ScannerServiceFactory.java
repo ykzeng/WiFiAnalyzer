@@ -18,6 +18,7 @@
 
 package com.vrem.wifianalyzer.wifi.scanner;
 
+import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -31,7 +32,7 @@ public class ScannerServiceFactory {
 
     @NonNull
     public static ScannerService makeScannerService
-        (@NonNull WifiManager wifiManager, @NonNull Handler handler, @NonNull Settings settings) {
-        return new Scanner(wifiManager, handler, settings);
+        (@NonNull Context context, @NonNull WifiManager wifiManager, @NonNull Handler handler, @NonNull Settings settings) {
+        return new Scanner(context, wifiManager, handler, settings);
     }
 }

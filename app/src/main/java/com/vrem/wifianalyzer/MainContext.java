@@ -114,7 +114,7 @@ public enum MainContext {
         setConfiguration(currentConfiguration);
         setSettings(currentSettings);
         setVendorService(VendorServiceFactory.makeVendorService(mainActivity.getResources()));
-        setScannerService(ScannerServiceFactory.makeScannerService(wifiManager, handler, currentSettings));
+        setScannerService(ScannerServiceFactory.makeScannerService(mainActivity.getBaseContext(), wifiManager, handler, currentSettings));
         setFilterAdapter(new FilterAdapter(currentSettings));
     }
 

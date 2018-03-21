@@ -18,8 +18,13 @@
 
 package com.vrem.wifianalyzer;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -27,12 +32,15 @@ import android.view.View;
 import com.vrem.util.ConfigurationUtils;
 import com.vrem.wifianalyzer.settings.Settings;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Locale;
 
 public class ActivityUtils {
     private ActivityUtils() {
         throw new IllegalStateException("Utility class");
     }
+
 
     @NonNull
     public static Context createContext(@NonNull Context context) {

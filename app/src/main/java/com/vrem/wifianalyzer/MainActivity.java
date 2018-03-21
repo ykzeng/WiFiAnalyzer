@@ -18,6 +18,7 @@
 
 package com.vrem.wifianalyzer;
 
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -45,7 +46,9 @@ import com.vrem.wifianalyzer.settings.Settings;
 import com.vrem.wifianalyzer.wifi.accesspoint.ConnectionView;
 import com.vrem.wifianalyzer.wifi.band.WiFiBand;
 import com.vrem.wifianalyzer.wifi.band.WiFiChannel;
+import com.vrem.wifianalyzer.wifi.scanner.Scanner;
 
+import java.io.IOException;
 import java.util.Locale;
 
 import static android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
@@ -96,6 +99,8 @@ public class MainActivity extends AppCompatActivity
 
         ConnectionView connectionView = new ConnectionView(this);
         mainContext.getScannerService().register(connectionView);
+
+        Notification notification = new Notification();
     }
 
     @Override
@@ -186,8 +191,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onPause() {
-        MainContext.INSTANCE.getScannerService().pause();
-        updateActionBar();
+        //MainContext.INSTANCE.getScannerService().pause();
+        //updateActionBar();
         super.onPause();
     }
 
@@ -263,5 +268,17 @@ public class MainActivity extends AppCompatActivity
 
     void setDrawerNavigation(DrawerNavigation drawerNavigation) {
         this.drawerNavigation = drawerNavigation;
+    }
+
+    @Override
+    protected  void onDestroy(){
+        super.onDestroy();
+
+        try {
+            Scanner.fOut.flush();
+            Scanner.fOut.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 }

@@ -35,12 +35,15 @@ import com.vrem.wifianalyzer.wifi.model.WiFiSignal;
 import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.IterableUtils;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Scanner;
 
-class ExportItem implements NavigationItem {
+public class ExportItem implements NavigationItem {
     private static final String TIME_STAMP_FORMAT = "yyyy/MM/dd HH:mm:ss";
     private String timestamp;
 
@@ -52,19 +55,17 @@ class ExportItem implements NavigationItem {
             Toast.makeText(mainActivity, R.string.no_data, Toast.LENGTH_LONG).show();
             return;
         }
-        timestamp = new SimpleDateFormat(TIME_STAMP_FORMAT).format(new Date());
-        String data = getData(timestamp, wiFiDetails);
-        Intent intent = createIntent(title, data);
-        Intent chooser = createChooserIntent(intent, title);
-        if (!exportAvailable(mainActivity, chooser)) {
-            Toast.makeText(mainActivity, R.string.export_not_available, Toast.LENGTH_LONG).show();
-            return;
-        }
-        try {
-            mainActivity.startActivity(chooser);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(mainActivity, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-        }
+//        Intent intent = createIntent(title, data);
+//        Intent chooser = createChooserIntent(intent, title);
+//        if (!exportAvailable(mainActivity, chooser)) {
+//            Toast.makeText(mainActivity, R.string.export_not_available, Toast.LENGTH_LONG).show();
+//            return;
+//        }
+//        try {
+//            mainActivity.startActivity(chooser);
+//        } catch (ActivityNotFoundException e) {
+//            Toast.makeText(mainActivity, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+//        }
     }
 
     @Override
@@ -81,13 +82,14 @@ class ExportItem implements NavigationItem {
     }
 
     @NonNull
-    String getData(String timestamp, @NonNull List<WiFiDetail> wiFiDetails) {
-        final StringBuilder result = new StringBuilder();
-        result.append(
-            String.format(Locale.ENGLISH,
-                "Time Stamp|SSID|BSSID|Strength|Primary Channel|Primary Frequency|Center Channel|Center Frequency|Width (Range)|Distance|Security%n"));
-        IterableUtils.forEach(wiFiDetails, new WiFiDetailClosure(timestamp, result));
-        return result.toString();
+    public static String getData(String timestamp, @NonNull List<WiFiDetail> wiFiDetails) {
+//        final StringBuilder result = new StringBuilder();
+//        result.append(
+//            String.format(Locale.ENGLISH,
+//                "Time Stamp|SSID|BSSID|Strength|Primary Channel|Primary Frequency|Center Channel|Center Frequency|Width (Range)|Distance|Security%n"));
+//        IterableUtils.forEach(wiFiDetails, new WiFiDetailClosure(timestamp, result));
+//        return result.toString();
+        return com.vrem.wifianalyzer.wifi.scanner.Scanner.wifiHistData;
     }
 
     @NonNull
@@ -121,38 +123,6 @@ class ExportItem implements NavigationItem {
 
     String getTimestamp() {
         return timestamp;
-    }
-
-    private class WiFiDetailClosure implements Closure<WiFiDetail> {
-        private final StringBuilder result;
-        private final String timestamp;
-
-        private WiFiDetailClosure(String timestamp, @NonNull StringBuilder result) {
-            this.result = result;
-            this.timestamp = timestamp;
-        }
-
-        @Override
-        public void execute(WiFiDetail wiFiDetail) {
-            WiFiSignal wiFiSignal = wiFiDetail.getWiFiSignal();
-            result.append(String.format(Locale.ENGLISH, "%s|%s|%s|%ddBm|%d|%d%s|%d|%d%s|%d%s (%d - %d)|%.1fm|%s%n",
-                timestamp,
-                wiFiDetail.getSSID(),
-                wiFiDetail.getBSSID(),
-                wiFiSignal.getLevel(),
-                wiFiSignal.getPrimaryWiFiChannel().getChannel(),
-                wiFiSignal.getPrimaryFrequency(),
-                WiFiSignal.FREQUENCY_UNITS,
-                wiFiSignal.getCenterWiFiChannel().getChannel(),
-                wiFiSignal.getCenterFrequency(),
-                WiFiSignal.FREQUENCY_UNITS,
-                wiFiSignal.getWiFiWidth().getFrequencyWidth(),
-                WiFiSignal.FREQUENCY_UNITS,
-                wiFiSignal.getFrequencyStart(),
-                wiFiSignal.getFrequencyEnd(),
-                wiFiSignal.getDistance(),
-                wiFiDetail.getCapabilities()));
-        }
     }
 
 }
